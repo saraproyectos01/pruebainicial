@@ -1,0 +1,13 @@
+[
+  {
+    "id": "gusano-game",
+    "title": "Gusanito Glotón",
+    "description": "Juego arcade interactivo donde el gusano devora frutas, crece continuamente, tiene efectos de sonido sintetizados y partículas.",
+    "category": "Juegos",
+    "icon": "🐛",
+    "path": "./gusano-game/",
+    "status": "Listo",
+    "tags": ["HTML5 Canvas", "Web Audio API", "Arcade", "Móvil"],
+    "date": "Noviembre 2026"
+  }
+]

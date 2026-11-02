@@ -1,0 +1,21 @@
+{
+  "name": "gusanito-gloton",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Juego arcade interactivo del gusano listo para desplegar en Vercel",
+  "scripts": {
+    "start": "npx serve ."
+  },
+  "keywords": [
+    "snake",
+    "gusano",
+    "game",
+    "html5",
+    "canvas",
+    "arcade",
+    "vercel"
+  ],
+  "author": "",
+  "license": "MIT"
+}
+

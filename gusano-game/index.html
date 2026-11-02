@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Gusanito Glotón | Juego del Gusano Arcade</title>
+  <meta name="description" content="Juego arcade del gusano que come frutas y crece sin parar. ¡Supera tu récord!">
+  <meta name="theme-color" content="#10b981">
+  
+  <!-- Open Graph -->
+  <meta property="og:title" content="Gusanito Glotón - Juego del Gusano">
+  <meta property="og:description" content="¡Come tantas frutas como puedas y haz crecer a tu gusanito sin chocar!">
+  <meta property="og:type" content="website">
+
+  <!-- Favicon SVG -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐛</text></svg>">
+  
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header / HUD -->
+    <header class="hud-header">
+      <div class="hud-brand">
+        <span class="hud-icon">🐛</span>
+        <h1 class="hud-title">GUSANITO</h1>
+      </div>
+      
+      <div class="hud-stats">
+        <div class="stat-pill score-pill">
+          <span class="stat-label">PUNTOS</span>
+          <span class="stat-value" id="score">0</span>
+        </div>
+        <div class="stat-pill high-score-pill">
+          <span class="stat-label">RÉCORD 🏆</span>
+          <span class="stat-value" id="highScore">0</span>
+        </div>
+      </div>
+
+      <div class="hud-controls">
+        <button id="soundBtn" class="icon-btn" title="Activar/Silenciar sonido" aria-label="Sonido">
+          <span id="soundIcon">🔊</span>
+        </button>
+        <button id="pauseBtn" class="icon-btn" title="Pausar juego (Espacio / Esc)" aria-label="Pausa">
+          <span id="pauseIcon">⏸️</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Game Area -->
+    <main class="game-stage">
+      <div class="canvas-wrapper" id="canvasWrapper">
+        <canvas id="gameCanvas" width="600" height="600"></canvas>
+        
+        <!-- Overlay: Menu Inicial -->
+        <div id="startOverlay" class="game-overlay active">
+          <div class="overlay-card">
+            <div class="worm-mascot">🐛🍎</div>
+            <h2 class="overlay-title">¡Bienvenido a Gusanito!</h2>
+            <p class="overlay-subtitle">Come las frutas, crece tanto como puedas y evita chocar con tu cuerpo o las paredes.</p>
+            
+            <div class="settings-group">
+              <label for="difficultySelect">Dificultad / Velocidad:</label>
+              <select id="difficultySelect">
+                <option value="easy">Tranquilo (Fácil)</option>
+                <option value="normal" selected>Normal (Clásico)</option>
+                <option value="hard">Rápido (Desafío)</option>
+                <option value="insane">Extremo (Locura)</option>
+              </select>
+            </div>
+
+            <div class="settings-group">
+              <label for="wallModeSelect">Regla de Bordes:</label>
+              <select id="wallModeSelect">
+                <option value="solid" selected>Paredes Sólidas (Clásico)</option>
+                <option value="portal">Sin Fin (Atraviesa paredes)</option>
+              </select>
+            </div>
+
+            <button id="startGameBtn" class="btn btn-primary btn-pulse">
+              🎮 Iniciar Partida
+            </button>
+
+            <div class="controls-hint">
+              <p>🕹️ <strong>Controles:</strong> Flechas del teclado o <strong>W A S D</strong></p>
+              <p>📱 En celulares usa el pad táctil o desliza la pantalla</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Overlay: Pausa -->
+        <div id="pauseOverlay" class="game-overlay">
+          <div class="overlay-card">
+            <h2 class="overlay-title">⏸️ Juego en Pausa</h2>
+            <p class="overlay-subtitle">Toma un respiro. Tu gusanito te está esperando.</p>
+            <div class="overlay-actions">
+              <button id="resumeGameBtn" class="btn btn-primary">Continuar</button>
+              <button id="restartFromPauseBtn" class="btn btn-secondary">Reiniciar</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Overlay: Game Over -->
+        <div id="gameOverOverlay" class="game-overlay">
+          <div class="overlay-card">
+            <div class="overlay-badge" id="newRecordBadge">🏆 ¡NUEVO RÉCORD!</div>
+            <h2 class="overlay-title" id="gameOverTitle">💥 ¡Fin de la partida!</h2>
+            <p id="deathReason" class="overlay-subtitle">Chocaste contra tu propia cola.</p>
+            
+            <div class="results-board">
+              <div class="result-item">
+                <span class="result-label">Puntaje Final</span>
+                <span class="result-val" id="finalScore">0</span>
+              </div>
+              <div class="result-item">
+                <span class="result-label">Largo Alcanzado</span>
+                <span class="result-val" id="finalLength">0</span>
+              </div>
+              <div class="result-item">
+                <span class="result-label">Frutas Devoradas</span>
+                <span class="result-val" id="finalFoodCount">0</span>
+              </div>
+            </div>
+
+            <div class="overlay-actions">
+              <button id="playAgainBtn" class="btn btn-primary btn-pulse">
+                🔄 Jugar de Nuevo
+              </button>
+              <button id="changeSettingsBtn" class="btn btn-secondary">
+                ⚙️ Opciones
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Mobile Virtual Controls / D-Pad -->
+    <footer class="touch-controls" id="touchControls">
+      <div class="dpad">
+        <button class="dpad-btn dpad-up" data-dir="UP" aria-label="Arriba">▲</button>
+        <div class="dpad-middle">
+          <button class="dpad-btn dpad-left" data-dir="LEFT" aria-label="Izquierda">◀</button>
+          <div class="dpad-center"></div>
+          <button class="dpad-btn dpad-right" data-dir="RIGHT" aria-label="Derecha">▶</button>
+        </div>
+        <button class="dpad-btn dpad-down" data-dir="DOWN" aria-label="Abajo">▼</button>
+      </div>
+    </footer>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>
+
