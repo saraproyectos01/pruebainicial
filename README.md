@@ -75,10 +75,10 @@ Cada vez que se solicite crear una nueva aplicación, juego, herramienta o exper
   {
     "version": 2,
     "cleanUrls": true,
-    "trailingSlash": false
+    "trailingSlash": true
   }
   ```
-  Esto permite que Vercel sirva automáticamente la raíz como el Hub (`/`) y cada subcarpeta como subruta independiente (`/nombre-proyecto/`).
+  > **Nota Técnica:** `"trailingSlash": true` es indispensable en proyectos con subcarpetas para que URLs como `/gusano-game/` mantengan la barra final. Sin ella, el navegador resuelve los archivos relativos (`style.css`, `game.js`) en la raíz del dominio arrojando errores 404.
 
 ---
 
