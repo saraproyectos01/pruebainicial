@@ -83,19 +83,27 @@ if (-not $currentBranch) {
     $currentBranch = "main"
 }
 
-Write-Host "[PULL] Sincronizando cambios con origin/$currentBranch..." -ForegroundColor Cyan
-& $git pull origin $currentBranch --rebase
+# 5. Sincronizacion inteligente con remoto
+$remoteBranchExists = & $git ls-remote --heads origin $currentBranch 2>$null
 
-if ($LASTEXITCODE -ne 0) {
-    Write-Host "[CONFLICTO] Conflicto detectado. Aplicando reparacion de Hierro..." -ForegroundColor Yellow
-    & $git rebase --abort 2>$null
-    & $git pull origin $currentBranch --no-rebase -X ours
-    & $git add -A
-    & $git commit -m "$msg (Conflict Resolved)" 2>$null
+if ($remoteBranchExists) {
+    Write-Host "[PULL] Sincronizando cambios con origin/$currentBranch..." -ForegroundColor Cyan
+    & $git pull origin $currentBranch --rebase
+
+    if ($LASTEXITCODE -ne 0) {
+        Write-Host "[CONFLICTO] Conflicto detectado. Aplicando reparacion de Hierro..." -ForegroundColor Yellow
+        & $git rebase --abort 2>$null
+        & $git pull origin $currentBranch --no-rebase -X ours
+        & $git add -A
+        & $git commit -m "$msg (Conflict Resolved)" 2>$null
+    }
+} else {
+    Write-Host "[INFO] Rama '$currentBranch' nueva en remoto. Saltando sincronizacion inicial..." -ForegroundColor DarkCyan
 }
 
+# 6. Push a GitHub
 Write-Host "[PUSH] Subiendo cambios a origin/$currentBranch..." -ForegroundColor Cyan
-& $git push origin $currentBranch
+& $git push -u origin $currentBranch
 if ($LASTEXITCODE -eq 0) {
     Write-Host "[EXITO] Subida completada con exito!" -ForegroundColor Green
 } else {
