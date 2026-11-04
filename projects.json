@@ -9,6 +9,17 @@
     "status": "Listo",
     "tags": ["HTML5 Canvas", "Web Audio API", "Arcade", "Móvil"],
     "date": "Noviembre 2026"
+  },
+  {
+    "id": "aqua-colores",
+    "title": "Aqua Colores (Gotas Líquidas 8x8)",
+    "description": "Juego acuático bubble shooter 8x8 con aspecto de agua líquida brillante, fusiones, nombres inventados, screen shake y control por coordenadas A-H / 1-8, texto o voz.",
+    "category": "Juegos",
+    "icon": "💧",
+    "path": "./aqua-colores/",
+    "status": "Listo",
+    "tags": ["Bubble Shooter", "Web Audio API", "Web Speech API", "Agua Líquida"],
+    "date": "Noviembre 2026"
   }
 ]
 

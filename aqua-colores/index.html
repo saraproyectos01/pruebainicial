@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Aqua Colores | Gotas Líquidas 8x8 Bubble Shooter</title>
+  <meta name="description" content="Juego acuático interactivo de 8x8 con gotas líquidas brillantes de colores, control por coordenadas, voz y nombres inventados.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💧</text></svg>">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Fondo con efecto de reflejos de agua -->
+  <div class="water-caustics"></div>
+
+  <div class="game-wrapper" id="gameWrapper">
+    <!-- Barra superior de navegación y controles generales -->
+    <header class="game-header">
+      <div class="header-left">
+        <a href="../" class="btn-back" title="Volver al Portal Central">
+          <span class="icon">🏠</span> <span>Volver al Hub</span>
+        </a>
+        <div class="brand">
+          <span class="brand-logo">💧</span>
+          <div>
+            <h1>Aqua Colores</h1>
+            <p class="tagline">Gotas Líquidas & Fusiones Mágicas</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="stats-panel">
+        <div class="stat-box">
+          <span class="stat-label">PUNTOS</span>
+          <span class="stat-val" id="scoreDisplay">0</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-label">FUSIONES</span>
+          <span class="stat-val" id="mergesDisplay">0</span>
+        </div>
+        <div class="stat-box highlight">
+          <span class="stat-label">NIVEL MÁX</span>
+          <span class="stat-val" id="maxLevelDisplay">Niv. 1</span>
+        </div>
+        <button id="soundToggle" class="btn-icon" title="Silenciar / Activar Sonido">🔊</button>
+        <button id="resetGameBtn" class="btn-icon" title="Reiniciar Tablero">🔄</button>
+      </div>
+    </header>
+
+    <!-- Contenedor Principal: Tablero + Paneles de Control -->
+    <main class="game-layout">
+      
+      <!-- Panel Izquierdo: Cañón de Disparo y Comandos de Voz/Texto -->
+      <aside class="control-panel">
+        
+        <!-- Tarjeta del Lanzador / Gota Actual -->
+        <div class="card shooter-card">
+          <div class="card-title">
+            <span>🫧 Lanzador Acuático</span>
+            <span class="badge" id="cannonStatus">Listo</span>
+          </div>
+
+          <div class="cannon-preview">
+            <div class="liquid-bubble-preview" id="currentBubblePreview">
+              <div class="bubble-reflection"></div>
+              <div class="bubble-name" id="currentBubbleName">Zumi</div>
+            </div>
+            <div class="next-bubble-mini">
+              <span>Siguiente:</span>
+              <div class="mini-drop" id="nextBubblePreview"></div>
+            </div>
+          </div>
+
+          <div class="target-indicator-box" id="targetIndicatorBox">
+            <div class="target-title">Gota Apuntada:</div>
+            <div class="target-details">
+              <span class="target-coord" id="targetCoord">--</span>
+              <span class="target-name" id="targetName">Ninguna</span>
+              <span class="target-size" id="targetSize"></span>
+            </div>
+          </div>
+
+          <button id="btnFireDrop" class="btn-action btn-fire">
+            <span class="btn-icon-large">💧</span>
+            <span>¡DISPARAR GOTA!</span>
+          </button>
+        </div>
+
+        <!-- Tarjeta de Control por Texto y Voz -->
+        <div class="card command-card">
+          <div class="card-title">
+            <span>🗣️ Apuntar por Voz o Texto</span>
+            <span class="badge-hint">Ej: "C3" o "Zumi"</span>
+          </div>
+          
+          <p class="card-desc">
+            Escribe o di las coordenadas (ej. <strong>C3</strong>, <strong>A1</strong>) o el nombre de cualquier gota (ej. <strong>Zumi</strong>, <strong>Onka</strong>) para apuntar hacia ella:
+          </p>
+
+          <form id="commandForm" class="command-form" onsubmit="return false;">
+            <div class="input-group">
+              <input 
+                type="text" 
+                id="commandInput" 
+                placeholder="Escribe C3 o nombre (Zumi)..." 
+                autocomplete="off"
+                spellcheck="false"
+              />
+              <button type="submit" id="btnAimCommand" class="btn-input-action" title="Apuntar a esta gota">
+                🎯 Apuntar
+              </button>
+            </div>
+
+            <div class="voice-controls">
+              <button type="button" id="btnVoiceCommand" class="btn-voice" title="Hablar por micrófono">
+                <span class="mic-icon">🎙️</span>
+                <span id="voiceStatusText">Presiona para decir "C3" o nombre</span>
+              </button>
+            </div>
+            <div class="speech-result" id="speechResult" style="display: none;"></div>
+          </form>
+        </div>
+
+        <!-- Guía Rápida de Mecánicas -->
+        <div class="card rules-card">
+          <div class="card-title">🌊 Reglas Acuáticas</div>
+          <ul class="rules-list">
+            <li><strong>Mismo color:</strong> Al tocarse se fusionan y se hacen una bola <em>cada vez más grande</em> con nuevo nombre poderoso.</li>
+            <li><strong>Distinto color:</strong> Chocan, la pantalla tiembla <em>(screen shake)</em> y ambas gotas mutan a <em>nuevos nombres inventados</em>.</li>
+            <li><strong>Flechas del borde:</strong> Pulsa cualquier flecha de columna (A-H) o fila (1-8) para disparar directamente en esa dirección.</li>
+          </ul>
+        </div>
+      </aside>
+
+      <!-- Panel Central: Tablero 8x8 con Coordenadas y Flechas en los 4 Bordes -->
+      <section class="board-section">
+        
+        <!-- Tablero completo rodeado de bordes A-H y 1-8 -->
+        <div class="grid-table-container" id="gridContainer">
+          
+          <!-- Fila Superior: Coordenadas A-H y Flechas hacia abajo (↓) -->
+          <div class="board-edge top-edge">
+            <div class="corner-coord top-left" title="Esquina superior izquierda">A1</div>
+            <div class="edge-columns" id="topColHeaders">
+              <!-- Generado dinámicamente: Letras A-H con flechas ↓ -->
+            </div>
+            <div class="corner-coord top-right" title="Esquina superior derecha">H1</div>
+          </div>
+
+          <!-- Zona Media: Borde Izquierdo (1-8), Grilla 8x8, Borde Derecho (1-8) -->
+          <div class="board-middle">
+            <!-- Borde Izquierdo: Números 1-8 con flechas hacia la derecha (→) -->
+            <div class="board-edge left-edge" id="leftRowHeaders">
+              <!-- Generado dinámicamente: Números 1-8 con flechas → -->
+            </div>
+
+            <!-- TABLERO REAL 8x8 DE GOTAS -->
+            <div class="board-canvas-wrapper">
+              <div class="grid-board" id="gridBoard">
+                <!-- 64 celdas generadas con JS -->
+              </div>
+              <!-- Canvas de partículas de salpicaduras de agua y efectos de onda -->
+              <canvas id="particleCanvas"></canvas>
+            </div>
+
+            <!-- Borde Derecho: Números 1-8 con flechas hacia la izquierda (←) -->
+            <div class="board-edge right-edge" id="rightRowHeaders">
+              <!-- Generado dinámicamente: Números 1-8 con flechas ← -->
+            </div>
+          </div>
+
+          <!-- Fila Inferior: Coordenadas A-H y Flechas hacia arriba (↑) -->
+          <div class="board-edge bottom-edge">
+            <div class="corner-coord bottom-left" title="Esquina inferior izquierda">A8</div>
+            <div class="edge-columns" id="bottomColHeaders">
+              <!-- Generado dinámicamente: Letras A-H con flechas ↑ -->
+            </div>
+            <div class="corner-coord bottom-right" title="Esquina inferior derecha">H8</div>
+          </div>
+
+        </div>
+
+        <!-- Barra inferior de ayuda rápida y atajos -->
+        <div class="board-footer">
+          <div class="legend-colors" id="legendColors">
+            <!-- Badges de colores disponibles -->
+          </div>
+          <div class="hotkeys-info">
+            <span>💡 <strong>Tip:</strong> Puedes hacer click directo en cualquier celda para apuntar o disparar con [Espacio].</span>
+          </div>
+        </div>
+
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Sonido y Scripts -->
+  <script src="game.js"></script>
+</body>
+</html>
+

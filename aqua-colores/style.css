@@ -1,0 +1,1055 @@
+/* ==========================================================================
+   Aqua Colores - Estilos del Juego Acuático 8x8
+   ========================================================================== */
+
+:root {
+  --bg-deep: #050d1a;
+  --bg-water: #0a192f;
+  --card-bg: rgba(14, 30, 56, 0.75);
+  --card-border: rgba(56, 189, 248, 0.2);
+  --primary-cyan: #38bdf8;
+  --accent-glow: #06b6d4;
+  --text-main: #f1f5f9;
+  --text-muted: #94a3b8;
+  --board-bg: rgba(7, 19, 38, 0.9);
+  --cell-size: 56px;
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --transition-fast: 0.15s ease;
+  --transition-med: 0.25s ease;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+}
+
+body {
+  background-color: var(--bg-deep);
+  color: var(--text-main);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Fondo con efecto de caústicas de agua animadas */
+.water-caustics {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  background: 
+    radial-gradient(ellipse at 20% 20%, rgba(6, 182, 212, 0.12) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 80%, rgba(59, 130, 246, 0.12) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 50%, rgba(16, 185, 129, 0.08) 0%, transparent 60%);
+  z-index: 0;
+  animation: waterBreathe 12s ease-in-out infinite alternate;
+}
+
+@keyframes waterBreathe {
+  0% { transform: scale(1) translateY(0); filter: blur(20px); }
+  100% { transform: scale(1.08) translateY(-10px); filter: blur(30px); }
+}
+
+/* Envoltorio principal */
+.game-wrapper {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 16px 20px 40px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-height: 100vh;
+}
+
+/* Efecto de Screen Shake cuando chocan colores distintos */
+.screen-shake {
+  animation: liquidShake 0.45s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+@keyframes liquidShake {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  15% { transform: translate(-6px, 4px) rotate(-1.2deg); }
+  30% { transform: translate(6px, -4px) rotate(1.2deg); }
+  45% { transform: translate(-4px, -3px) rotate(-0.6deg); }
+  60% { transform: translate(4px, 3px) rotate(0.6deg); }
+  75% { transform: translate(-2px, 1px) rotate(-0.3deg); }
+  90% { transform: translate(2px, -1px) rotate(0.2deg); }
+  100% { transform: translate(0, 0) rotate(0deg); }
+}
+
+/* Header */
+.game-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--card-border);
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.btn-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(30, 58, 95, 0.7);
+  border: 1px solid rgba(56, 189, 248, 0.4);
+  color: #bae6fd;
+  text-decoration: none;
+  padding: 8px 16px;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: all var(--transition-fast);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+.btn-back:hover {
+  background: rgba(56, 189, 248, 0.25);
+  color: #fff;
+  border-color: #38bdf8;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(56, 189, 248, 0.3);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.brand-logo {
+  font-size: 2.2rem;
+  filter: drop-shadow(0 0 10px rgba(56, 189, 248, 0.6));
+  animation: floatDrop 3s ease-in-out infinite;
+}
+
+@keyframes floatDrop {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+.brand h1 {
+  font-size: 1.6rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #ffffff 30%, #38bdf8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  line-height: 1.1;
+}
+
+.brand .tagline {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+/* Panel de Estadísticas */
+.stats-panel {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.stat-box {
+  background: rgba(15, 23, 42, 0.75);
+  border: 1px solid var(--card-border);
+  padding: 6px 14px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 80px;
+}
+
+.stat-box.highlight {
+  border-color: rgba(6, 182, 212, 0.6);
+  background: rgba(6, 182, 212, 0.15);
+}
+
+.stat-label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  letter-spacing: 0.5px;
+}
+
+.stat-val {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #38bdf8;
+  font-variant-numeric: tabular-nums;
+}
+
+.btn-icon {
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid var(--card-border);
+  color: #fff;
+  font-size: 1.1rem;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+}
+
+.btn-icon:hover {
+  background: rgba(56, 189, 248, 0.2);
+  border-color: #38bdf8;
+  transform: scale(1.05);
+}
+
+/* Layout Principal */
+.game-layout {
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+@media (max-width: 960px) {
+  .game-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Tarjetas */
+.card {
+  background: var(--card-bg);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-md);
+  padding: 18px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.control-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.card-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #e2e8f0;
+}
+
+.badge {
+  font-size: 0.7rem;
+  padding: 3px 8px;
+  border-radius: 12px;
+  background: rgba(16, 185, 129, 0.2);
+  color: #6ee7b7;
+  border: 1px solid rgba(16, 185, 129, 0.4);
+  font-weight: 600;
+}
+
+.badge-hint {
+  font-size: 0.7rem;
+  color: #38bdf8;
+  background: rgba(56, 189, 248, 0.12);
+  padding: 3px 8px;
+  border-radius: 10px;
+}
+
+.card-desc {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+/* Preview del Lanzador */
+.cannon-preview {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  background: rgba(8, 20, 40, 0.85);
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  border-radius: var(--radius-sm);
+  padding: 14px;
+}
+
+.liquid-bubble-preview {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  animation: wobble 4s ease-in-out infinite alternate;
+}
+
+.next-bubble-mini {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.mini-drop {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  position: relative;
+}
+
+/* Caja de Gota Apuntada */
+.target-indicator-box {
+  background: rgba(10, 25, 48, 0.7);
+  border: 1px dashed rgba(56, 189, 248, 0.35);
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.82rem;
+}
+
+.target-title {
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.target-details {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.target-coord {
+  background: #0284c7;
+  color: #fff;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 4px;
+  font-size: 0.78rem;
+}
+
+.target-name {
+  color: #f1f5f9;
+  font-weight: 700;
+  text-transform: capitalize;
+}
+
+.target-size {
+  color: #38bdf8;
+  font-size: 0.75rem;
+}
+
+/* Botón de Disparo */
+.btn-action {
+  background: linear-gradient(135deg, #0284c7 0%, #06b6d4 100%);
+  color: #ffffff;
+  border: none;
+  padding: 12px 18px;
+  border-radius: var(--radius-sm);
+  font-weight: 800;
+  font-size: 0.95rem;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all var(--transition-fast);
+  box-shadow: 0 6px 20px rgba(2, 132, 199, 0.4);
+}
+
+.btn-action:hover {
+  filter: brightness(1.15);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(6, 182, 212, 0.5);
+}
+
+.btn-action:active {
+  transform: translateY(1px);
+}
+
+/* Formulario de comandos de texto y voz */
+.command-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.input-group {
+  display: flex;
+  gap: 6px;
+}
+
+.input-group input {
+  flex: 1;
+  background: rgba(8, 19, 36, 0.9);
+  border: 1px solid var(--card-border);
+  color: #fff;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 0.88rem;
+  outline: none;
+  transition: border-color var(--transition-fast);
+}
+
+.input-group input:focus {
+  border-color: #38bdf8;
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15);
+}
+
+.btn-input-action {
+  background: rgba(30, 58, 95, 0.85);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  color: #fff;
+  padding: 0 14px;
+  border-radius: var(--radius-sm);
+  font-weight: 700;
+  font-size: 0.82rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all var(--transition-fast);
+}
+
+.btn-input-action:hover {
+  background: #0284c7;
+  border-color: #38bdf8;
+}
+
+.btn-voice {
+  width: 100%;
+  background: rgba(15, 30, 56, 0.75);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  color: #e2e8f0;
+  padding: 9px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all var(--transition-fast);
+}
+
+.btn-voice:hover {
+  background: rgba(56, 189, 248, 0.2);
+  border-color: #38bdf8;
+}
+
+.btn-voice.listening {
+  background: rgba(239, 68, 68, 0.25);
+  border-color: #ef4444;
+  color: #fca5a5;
+  animation: pulseVoice 1.2s infinite;
+}
+
+@keyframes pulseVoice {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.5); }
+  50% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+}
+
+.speech-result {
+  font-size: 0.78rem;
+  padding: 6px 10px;
+  border-radius: var(--radius-sm);
+  background: rgba(8, 20, 40, 0.9);
+  color: #7dd3fc;
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  text-align: center;
+}
+
+/* Reglas */
+.rules-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  line-height: 1.45;
+}
+
+.rules-list strong {
+  color: #e2e8f0;
+}
+
+.rules-list em {
+  color: #38bdf8;
+  font-style: normal;
+}
+
+/* ==========================================================================
+   SECCIÓN DEL TABLERO 8x8 CON COORDENADAS Y FLECHAS
+   ========================================================================== */
+
+.board-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.grid-table-container {
+  display: flex;
+  flex-direction: column;
+  background: var(--board-bg);
+  border: 2px solid rgba(56, 189, 248, 0.3);
+  border-radius: var(--radius-lg);
+  padding: 8px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.55),
+              0 0 35px rgba(6, 182, 212, 0.15);
+  position: relative;
+}
+
+/* Bordes superior e inferior (Columnas A - H) */
+.board-edge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.top-edge, .bottom-edge {
+  height: 48px;
+}
+
+.edge-columns {
+  display: grid;
+  grid-template-columns: repeat(8, var(--cell-size));
+  gap: 6px;
+  margin: 0 6px;
+}
+
+.col-btn {
+  background: rgba(15, 30, 56, 0.65);
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  color: #e2e8f0;
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  height: 42px;
+  font-weight: 700;
+  font-size: 0.78rem;
+  transition: all var(--transition-fast);
+}
+
+.col-btn .col-letter {
+  font-size: 0.85rem;
+  color: #7dd3fc;
+}
+
+.col-btn .arrow-icon {
+  font-size: 0.75rem;
+  color: #38bdf8;
+  transition: transform 0.2s ease;
+}
+
+.col-btn:hover {
+  background: rgba(56, 189, 248, 0.25);
+  border-color: #38bdf8;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(56, 189, 248, 0.3);
+}
+
+.col-btn.active-target {
+  background: rgba(6, 182, 212, 0.45);
+  border-color: #06b6d4;
+  box-shadow: 0 0 12px rgba(6, 182, 212, 0.6);
+  animation: bounceCol 0.6s infinite alternate;
+}
+
+@keyframes bounceCol {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(3px); }
+}
+
+.bottom-edge .col-btn.active-target {
+  animation: bounceColUp 0.6s infinite alternate;
+}
+
+@keyframes bounceColUp {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-3px); }
+}
+
+/* Esquinas con coordenadas (A1, H1, A8, H8) */
+.corner-coord {
+  width: 48px;
+  height: 42px;
+  background: rgba(8, 19, 36, 0.85);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 0.82rem;
+  color: #38bdf8;
+  text-shadow: 0 0 6px rgba(56, 189, 248, 0.4);
+}
+
+/* Zona Media: Filas 1-8 a los lados y Cuadrícula en el centro */
+.board-middle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.left-edge, .right-edge {
+  display: grid;
+  grid-template-rows: repeat(8, var(--cell-size));
+  gap: 6px;
+  width: 48px;
+}
+
+.row-btn {
+  background: rgba(15, 30, 56, 0.65);
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  color: #e2e8f0;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  cursor: pointer;
+  height: var(--cell-size);
+  font-weight: 700;
+  font-size: 0.82rem;
+  transition: all var(--transition-fast);
+}
+
+.row-btn .row-num {
+  font-size: 0.9rem;
+  color: #7dd3fc;
+}
+
+.row-btn .arrow-icon {
+  font-size: 0.75rem;
+  color: #38bdf8;
+  transition: transform 0.2s ease;
+}
+
+.row-btn:hover {
+  background: rgba(56, 189, 248, 0.25);
+  border-color: #38bdf8;
+  transform: scale(1.04);
+  box-shadow: 0 4px 10px rgba(56, 189, 248, 0.3);
+}
+
+.row-btn.active-target {
+  background: rgba(6, 182, 212, 0.45);
+  border-color: #06b6d4;
+  box-shadow: 0 0 12px rgba(6, 182, 212, 0.6);
+  animation: bounceRow 0.6s infinite alternate;
+}
+
+@keyframes bounceRow {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(3px); }
+}
+
+.right-edge .row-btn.active-target {
+  animation: bounceRowLeft 0.6s infinite alternate;
+}
+
+@keyframes bounceRowLeft {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-3px); }
+}
+
+/* ==========================================================================
+   TABLERO REAL 8x8 DE GOTAS Y CANVAS
+   ========================================================================== */
+
+.board-canvas-wrapper {
+  position: relative;
+  margin: 6px;
+  border-radius: var(--radius-sm);
+  background: radial-gradient(circle at center, rgba(10, 25, 48, 0.85) 0%, rgba(4, 12, 26, 0.95) 100%);
+  border: 1px solid rgba(56, 189, 248, 0.2);
+  overflow: hidden;
+}
+
+.grid-board {
+  display: grid;
+  grid-template-columns: repeat(8, var(--cell-size));
+  grid-template-rows: repeat(8, var(--cell-size));
+  gap: 6px;
+  padding: 6px;
+  position: relative;
+  z-index: 2;
+}
+
+#particleCanvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 3;
+}
+
+/* Celda individual */
+.cell {
+  width: var(--cell-size);
+  height: var(--cell-size);
+  background: rgba(15, 30, 56, 0.4);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.cell:hover {
+  background: rgba(56, 189, 248, 0.15);
+}
+
+.cell.selected-target {
+  box-shadow: 0 0 0 2px #38bdf8, 0 0 16px rgba(56, 189, 248, 0.8);
+}
+
+.cell.selected-target::after {
+  content: '';
+  position: absolute;
+  width: 120%;
+  height: 120%;
+  border-radius: 50%;
+  border: 2px dashed #38bdf8;
+  animation: rotateTarget 6s linear infinite;
+}
+
+@keyframes rotateTarget {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Coordenada sutil en el fondo de la celda */
+.cell-coord-bg {
+  position: absolute;
+  font-size: 0.6rem;
+  color: rgba(255, 255, 255, 0.15);
+  font-weight: 700;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ==========================================================================
+   GOTAS LÍQUIDAS DE AGUA Y EFECTOS
+   ========================================================================== */
+
+.water-drop {
+  border-radius: 50%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1),
+              width 0.3s ease,
+              height 0.3s ease,
+              box-shadow 0.3s ease;
+  cursor: pointer;
+}
+
+/* Wobble orgánico de gota de agua */
+.water-drop.wobble {
+  animation: wobble 3.5s ease-in-out infinite alternate;
+}
+
+@keyframes wobble {
+  0% { transform: scale(1, 1) rotate(0deg); border-radius: 48% 52% 50% 50% / 51% 49% 51% 49%; }
+  33% { transform: scale(1.03, 0.97) rotate(2deg); border-radius: 53% 47% 52% 48% / 48% 53% 47% 52%; }
+  66% { transform: scale(0.97, 1.03) rotate(-2deg); border-radius: 49% 51% 48% 52% / 52% 48% 52% 48%; }
+  100% { transform: scale(1, 1) rotate(0deg); border-radius: 52% 48% 51% 49% / 50% 50% 49% 51%; }
+}
+
+/* Reflejo especular curvo de líquido brillante */
+.bubble-reflection {
+  position: absolute;
+  top: 12%;
+  left: 18%;
+  width: 32%;
+  height: 22%;
+  background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0) 80%);
+  border-radius: 50%;
+  transform: rotate(-35deg);
+  pointer-events: none;
+  z-index: 4;
+}
+
+/* Reflejo secundario tenue */
+.bubble-reflection-secondary {
+  position: absolute;
+  bottom: 14%;
+  right: 18%;
+  width: 20%;
+  height: 14%;
+  background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.45) 0%, rgba(255, 255, 255, 0) 70%);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 4;
+}
+
+/* Nombre inventado dentro/sobre la gota */
+.bubble-name {
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: #ffffff;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.85), 0 0 6px rgba(0, 0, 0, 0.6);
+  pointer-events: none;
+  z-index: 5;
+  text-transform: capitalize;
+  letter-spacing: -0.2px;
+  white-space: nowrap;
+}
+
+.bubble-size-badge {
+  font-size: 0.52rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.9);
+  background: rgba(0, 0, 0, 0.35);
+  padding: 1px 4px;
+  border-radius: 6px;
+  margin-top: 1px;
+  pointer-events: none;
+  z-index: 5;
+}
+
+/* Tamaños de las gotas según coalescencia / fusiones */
+/* Nivel 1 (Base): 72% de celda */
+.drop-lvl-1 {
+  width: 40px;
+  height: 40px;
+}
+
+/* Nivel 2: 84% de celda */
+.drop-lvl-2 {
+  width: 46px;
+  height: 46px;
+  filter: drop-shadow(0 0 6px currentColor);
+}
+
+/* Nivel 3: 94% de celda */
+.drop-lvl-3 {
+  width: 52px;
+  height: 52px;
+  filter: drop-shadow(0 0 10px currentColor);
+}
+
+/* Nivel 4 (Mega Gota): Rebosante 104% */
+.drop-lvl-4 {
+  width: 56px;
+  height: 56px;
+  filter: drop-shadow(0 0 14px currentColor);
+  animation: megaGlow 1.8s ease-in-out infinite alternate !important;
+}
+
+@keyframes megaGlow {
+  0% { transform: scale(1.02); filter: drop-shadow(0 0 8px currentColor); }
+  100% { transform: scale(1.08); filter: drop-shadow(0 0 18px currentColor); }
+}
+
+/* Paleta de colores líquidos brillantes */
+/* Verde Esmeralda */
+.drop-color-green {
+  background: radial-gradient(circle at 35% 35%, #34d399 0%, #059669 65%, #064e3b 100%);
+  box-shadow: inset 0 -4px 8px rgba(0, 0, 0, 0.4), 0 4px 12px rgba(16, 185, 129, 0.4);
+  color: #10b981;
+}
+
+/* Rojo Rubí */
+.drop-color-red {
+  background: radial-gradient(circle at 35% 35%, #f87171 0%, #dc2626 65%, #7f1d1d 100%);
+  box-shadow: inset 0 -4px 8px rgba(0, 0, 0, 0.4), 0 4px 12px rgba(239, 68, 68, 0.4);
+  color: #ef4444;
+}
+
+/* Azul Océano */
+.drop-color-blue {
+  background: radial-gradient(circle at 35% 35%, #60a5fa 0%, #2563eb 65%, #1e3a8a 100%);
+  box-shadow: inset 0 -4px 8px rgba(0, 0, 0, 0.4), 0 4px 12px rgba(37, 99, 235, 0.4);
+  color: #3b82f6;
+}
+
+/* Amarillo Ámbar / Sol */
+.drop-color-yellow {
+  background: radial-gradient(circle at 35% 35%, #fde047 0%, #eab308 65%, #713f12 100%);
+  box-shadow: inset 0 -4px 8px rgba(0, 0, 0, 0.4), 0 4px 12px rgba(234, 179, 8, 0.4);
+  color: #eab308;
+}
+
+/* Naranja Cítrico */
+.drop-color-orange {
+  background: radial-gradient(circle at 35% 35%, #fb923c 0%, #ea580c 65%, #7c2d12 100%);
+  box-shadow: inset 0 -4px 8px rgba(0, 0, 0, 0.4), 0 4px 12px rgba(234, 88, 12, 0.4);
+  color: #f97316;
+}
+
+/* Púrpura Amatista */
+.drop-color-purple {
+  background: radial-gradient(circle at 35% 35%, #c084fc 0%, #9333ea 65%, #581c87 100%);
+  box-shadow: inset 0 -4px 8px rgba(0, 0, 0, 0.4), 0 4px 12px rgba(147, 51, 234, 0.4);
+  color: #a855f7;
+}
+
+/* Cian Cristalino */
+.drop-color-cyan {
+  background: radial-gradient(circle at 35% 35%, #67e8f9 0%, #0891b2 65%, #164e63 100%);
+  box-shadow: inset 0 -4px 8px rgba(0, 0, 0, 0.4), 0 4px 12px rgba(6, 182, 212, 0.4);
+  color: #06b6d4;
+}
+
+/* Animación de Fusión (Merge) */
+.drop-merging {
+  animation: mergePop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes mergePop {
+  0% { transform: scale(0.6); filter: brightness(2); }
+  50% { transform: scale(1.3); filter: brightness(1.6); }
+  100% { transform: scale(1); filter: brightness(1); }
+}
+
+/* Animación de Cambio de Nombre al chocar colores distintos */
+.name-changed {
+  animation: nameFlash 0.5s ease-out;
+}
+
+@keyframes nameFlash {
+  0% { transform: scale(1.25); filter: hue-rotate(90deg) brightness(1.5); }
+  100% { transform: scale(1); filter: none; }
+}
+
+/* Gota en Movimiento (Proyectil de agua) */
+.drop-projectile {
+  position: absolute;
+  z-index: 100;
+  pointer-events: none;
+  transition: transform 0.22s cubic-bezier(0.2, 0.8, 0.4, 1);
+}
+
+/* Footer del tablero */
+.board-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.legend-colors {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.legend-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(15, 30, 56, 0.6);
+  border: 1px solid var(--card-border);
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.72rem;
+  color: #cbd5e1;
+}
+
+.legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.hotkeys-info {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+/* ==========================================================================
+   RESPONSIVIDAD Y AJUSTE EN PANTALLAS PEQUEÑAS
+   ========================================================================== */
+
+@media (max-width: 680px) {
+  :root {
+    --cell-size: 38px;
+  }
+
+  .grid-table-container {
+    padding: 4px;
+  }
+
+  .top-edge, .bottom-edge {
+    height: 38px;
+  }
+
+  .corner-coord {
+    width: 38px;
+    height: 34px;
+    font-size: 0.7rem;
+  }
+
+  .col-btn {
+    height: 34px;
+    font-size: 0.7rem;
+  }
+
+  .left-edge, .right-edge {
+    width: 38px;
+  }
+
+  .row-btn {
+    font-size: 0.7rem;
+  }
+
+  .bubble-name {
+    font-size: 0.52rem;
+  }
+
+  .drop-lvl-1 { width: 28px; height: 28px; }
+  .drop-lvl-2 { width: 32px; height: 32px; }
+  .drop-lvl-3 { width: 36px; height: 36px; }
+  .drop-lvl-4 { width: 38px; height: 38px; }
+}
+

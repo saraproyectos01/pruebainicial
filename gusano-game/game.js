@@ -188,7 +188,7 @@
     if (emptyCells.length === 0) return; // Tablero lleno (Victoria total)
 
     const randomCell = emptyCells[Math.floor(Math.random() * emptyCells.length)];
-    
+
     // Tipos de fruta regular
     const types = [
       { emoji: '🍎', points: 10, grow: 1, color: '#ef4444' },
@@ -507,7 +507,7 @@
         ctx.save();
         ctx.beginPath();
         ctx.arc(cx, cy, radius, 0, Math.PI * 2);
-        
+
         // Alternar tonalidad de anillos
         if (i % 2 === 0) {
           ctx.fillStyle = '#10b981';
