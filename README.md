@@ -86,6 +86,7 @@ Cada vez que se solicite crear una nueva aplicación, juego, herramienta o exper
 
 | Proyecto | Carpeta | Categoría | Tecnologías | Enlace Relativo |
 | :--- | :--- | :--- | :--- | :--- |
+| **Tortuga LOGO** | `/logo-tortuga/` | Educación | LOGO Interpreter, Canvas 2D, Web Audio API, Gamificación | [`./logo-tortuga/`](./logo-tortuga/) |
 | **Gusanito Glotón** | `/gusano-game/` | Juegos | HTML5 Canvas, Web Audio API, Vanilla JS | [`./gusano-game/`](./gusano-game/) |
 | **Aqua Colores** | `/aqua-colores/` | Juegos | Bubble Shooter, Web Audio API, Web Speech API, Agua Líquida | [`./aqua-colores/`](./aqua-colores/) |
 

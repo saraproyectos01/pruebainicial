@@ -1,5 +1,16 @@
 [
   {
+    "id": "logo-tortuga",
+    "title": "Tortuga LOGO (Aprende a Programar)",
+    "description": "Juego educativo inspirado en LOGO: dale órdenes a la tortuguita (AVANZA, GIRADERECHA, REPITE), supera 10 niveles y dibuja arte geométrico.",
+    "category": "Educación",
+    "icon": "🐢",
+    "path": "./logo-tortuga/",
+    "status": "Listo",
+    "tags": ["Educación", "Programación LOGO", "Canvas 2D", "Web Audio API", "Geometría"],
+    "date": "Noviembre 2026"
+  },
+  {
     "id": "gusano-game",
     "title": "Gusanito Glotón",
     "description": "Juego arcade interactivo donde el gusano devora frutas, crece continuamente, tiene efectos de sonido sintetizados y partículas.",
@@ -22,4 +33,3 @@
     "date": "Noviembre 2026"
   }
 ]
-

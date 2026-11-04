@@ -315,6 +315,7 @@
       <div class="category-chips" id="categoryChips">
         <button class="chip active" data-cat="all">Todos</button>
         <button class="chip" data-cat="Juegos">Juegos</button>
+        <button class="chip" data-cat="Educación">Educación</button>
         <button class="chip" data-cat="Herramientas">Herramientas</button>
         <button class="chip" data-cat="Web">Web</button>
       </div>
@@ -333,6 +334,17 @@
   <script>
     // Lista inicial de proyectos (se puede extender fácilmente aquí o vía projects.json)
     const DEFAULT_PROJECTS = [
+      {
+        id: "logo-tortuga",
+        title: "Tortuga LOGO (Aprende a Programar)",
+        description: "Juego educativo inspirado en LOGO: dale órdenes a la tortuguita (AVANZA, GIRADERECHA, REPITE), supera 10 niveles y dibuja arte geométrico.",
+        category: "Educación",
+        icon: "🐢",
+        path: "./logo-tortuga/",
+        status: "Listo",
+        tags: ["Educación", "Programación LOGO", "Canvas 2D", "Web Audio API", "Geometría"],
+        date: "Noviembre 2026"
+      },
       {
         id: "gusano-game",
         title: "Gusanito Glotón",

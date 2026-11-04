@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Tortuga LOGO | Juego Educativo de Programación</title>
+  <meta name="description" content="Aprende a programar dándole órdenes a la simpática tortuguita. Lenguaje LOGO educativo con misiones paso a paso y estudio libre.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐢</text></svg>">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Fondo decorativo con partículas sutiles de cuadrícula -->
+  <div class="bg-pattern"></div>
+
+  <div class="game-wrapper">
+    <!-- Encabezado Principal -->
+    <header class="app-header">
+      <div class="header-left">
+        <a href="../" class="btn-back" title="Volver al Portal Central de Proyectos">
+          <span class="icon">🏠</span> <span>Hub</span>
+        </a>
+        <div class="brand">
+          <div class="brand-avatar">🐢</div>
+          <div>
+            <h1>Tortuga LOGO</h1>
+            <p class="tagline">Aprende a Programar Dibujando con la Tortuguita</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Selector de Modo: Misiones vs Estudio Libre -->
+      <div class="mode-switcher" role="tablist">
+        <button id="modeMissionsBtn" class="mode-tab active" role="tab" aria-selected="true">
+          <span class="tab-icon">🌟</span>
+          <span>Misiones y Desafíos</span>
+          <span class="stars-badge" id="totalStarsBadge">⭐ 0/30</span>
+        </button>
+        <button id="modePlaygroundBtn" class="mode-tab" role="tab" aria-selected="false">
+          <span class="tab-icon">🎨</span>
+          <span>Estudio Libre</span>
+        </button>
+      </div>
+
+      <!-- Controles Globales -->
+      <div class="header-controls">
+        <div class="speed-control" title="Velocidad de movimiento de la tortuga">
+          <span class="speed-icon" id="speedLabel">⚡ Normal</span>
+          <input type="range" id="speedSlider" min="1" max="5" value="3" aria-label="Velocidad">
+        </div>
+        <button id="soundToggle" class="btn-icon" title="Sonido activado / silenciado">🔊</button>
+        <button id="helpModalBtn" class="btn-icon" title="Ayuda y Comandos LOGO">❓</button>
+      </div>
+    </header>
+
+    <!-- Layout Principal -->
+    <main class="main-layout">
+      
+      <!-- COLUMNA IZQUIERDA: Código, Misiones y Botonera -->
+      <section class="left-panel">
+
+        <!-- TARJETA DE MISIÓN (Visible en Modo Misiones) -->
+        <div class="card mission-card" id="missionPanel">
+          <div class="mission-header">
+            <div class="mission-nav">
+              <button id="prevLevelBtn" class="btn-nav" title="Nivel anterior">◀</button>
+              <div class="mission-title-box">
+                <div class="mission-step" id="levelNumberLabel">Misión 1 de 10</div>
+                <h2 class="mission-title" id="levelTitle">¡Primeros Pasos!</h2>
+              </div>
+              <button id="nextLevelBtn" class="btn-nav" title="Siguiente nivel">▶</button>
+            </div>
+            <div class="mission-stars" id="levelStarsDisplay">☆☆☆</div>
+          </div>
+
+          <p class="mission-desc" id="levelObjective">
+            Lleva a la tortuguita hasta la deliciosa lechuga 🥬 avanzando en línea recta.
+          </p>
+
+          <div class="mission-hint-box" id="levelHintBox">
+            <button class="hint-toggle" id="hintToggleBtn">
+              💡 <span>Ver Pista Pedagógica</span>
+            </button>
+            <div class="hint-content hidden" id="hintContent">
+              Escribe <code>AVANZA 150</code> y pulsa <strong>Ejecutar</strong>.
+            </div>
+          </div>
+        </div>
+
+        <!-- TARJETA DEL EDITOR DE CÓDIGO -->
+        <div class="card editor-card">
+          <div class="card-title-bar">
+            <div class="card-title">
+              <span>💻 Código LOGO</span>
+              <span class="badge" id="executionStatus">Listo</span>
+            </div>
+            <div class="card-actions">
+              <!-- Selector de Ejemplos en Estudio Libre -->
+              <div class="dropdown-wrapper" id="examplesDropdownWrapper">
+                <button class="btn-sm btn-outline dropdown-toggle" id="examplesBtn">
+                  <span>✨ Galería de Figuras</span> ▾
+                </button>
+                <div class="dropdown-menu hidden" id="examplesMenu">
+                  <button class="dropdown-item" data-example="square">🟩 Cuadrado Perfecto</button>
+                  <button class="dropdown-item" data-example="triangle">🔺 Triángulo Equilátero</button>
+                  <button class="dropdown-item" data-example="star">⭐ Estrella Mágica (5 puntas)</button>
+                  <button class="dropdown-item" data-example="flower">🌸 Mandala Flor Geométrica</button>
+                  <button class="dropdown-item" data-example="spiral">🌀 Espiral Arcoíris</button>
+                  <button class="dropdown-item" data-example="snowflake">❄️ Copo de Nieve</button>
+                  <button class="dropdown-item" data-example="house">🏠 La Casita Clásica</button>
+                  <button class="dropdown-item" data-example="tree">🌳 Mini Árbol Fractal</button>
+                </div>
+              </div>
+              <button class="btn-sm btn-ghost" id="clearEditorBtn" title="Vaciar editor de texto">🗑️ Limpiar Código</button>
+            </div>
+          </div>
+
+          <!-- Área de Código con Números de Línea -->
+          <div class="editor-container">
+            <div class="line-numbers" id="lineNumbers">1</div>
+            <textarea id="codeEditor" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off" placeholder="Escribe aquí las órdenes para la tortuguita...&#10;Ejemplo:&#10;AVANZA 100&#10;GIRADERECHA 90"></textarea>
+          </div>
+
+          <!-- Barra de Botones de Ejecución -->
+          <div class="editor-actions">
+            <button id="runCodeBtn" class="btn-action btn-run" title="Ejecutar todo el programa (Ctrl + Enter)">
+              <span class="icon">▶</span> <strong>Ejecutar</strong>
+            </button>
+            <button id="stepCodeBtn" class="btn-action btn-step" title="Ejecutar instrucción por instrucción paso a paso">
+              <span class="icon">⏭</span> <strong>Paso a Paso</strong>
+            </button>
+            <button id="stopCodeBtn" class="btn-action btn-stop" disabled title="Detener ejecución en curso">
+              <span class="icon">⏹</span> <strong>Detener</strong>
+            </button>
+            <button id="resetTurtleBtn" class="btn-action btn-secondary" title="Centrar la tortuguita y reiniciar trazo">
+              <span class="icon">🐢</span> <strong>Reiniciar</strong>
+            </button>
+          </div>
+        </div>
+
+        <!-- TARJETA DE BLOQUES / BOTONES RÁPIDOS PARA PRINCIPIANTES -->
+        <div class="card palette-card">
+          <div class="palette-header">
+            <span class="palette-title">🕹️ Bloques y Acciones Rápidas</span>
+            <span class="palette-sub">Toca para insertar en el código</span>
+          </div>
+          <div class="palette-grid">
+            <button class="block-btn move" data-code="AVANZA 50" title="Avanzar 50 pasos">
+              <span>⬆️</span> AV 50
+            </button>
+            <button class="block-btn move" data-code="AVANZA 100" title="Avanzar 100 pasos">
+              <span>⬆️</span> AV 100
+            </button>
+            <button class="block-btn move" data-code="RETROCEDE 50" title="Retroceder 50 pasos">
+              <span>⬇️</span> RE 50
+            </button>
+            <button class="block-btn turn" data-code="GIRADERECHA 90" title="Girar a la derecha 90 grados">
+              <span>↪️</span> GD 90°
+            </button>
+            <button class="block-btn turn" data-code="GIRAIZQUIERDA 90" title="Girar a la izquierda 90 grados">
+              <span>↩️</span> GI 90°
+            </button>
+            <button class="block-btn turn" data-code="GIRADERECHA 45" title="Girar a la derecha 45 grados">
+              <span>↪️</span> GD 45°
+            </button>
+            <button class="block-btn pen" data-code="BAJAPLUMA" title="Bajar lápiz para pintar">
+              <span>🟢</span> Lápiz Abajo
+            </button>
+            <button class="block-btn pen" data-code="SUBEPLUMA" title="Subir lápiz para moverse sin pintar">
+              <span>⚪</span> Lápiz Arriba
+            </button>
+            <button class="block-btn color" data-code="COLOR arcoiris" title="Modo trazo multicolor">
+              <span>🌈</span> Arcoíris
+            </button>
+            <button class="block-btn loop" data-code="REPITE 4 [ AVANZA 80 GIRADERECHA 90 ]" title="Repetir 4 veces (Cuadrado)">
+              <span>🔁</span> Repite 4 [...]
+            </button>
+            <button class="block-btn loop" data-code="REPITE 360 [ AVANZA 1 GIRADERECHA 1 ]" title="Repetir 360 veces (Círculo)">
+              <span>⭕</span> Círculo
+            </button>
+            <button class="block-btn util" data-code="CENTRO" title="Volver al centro">
+              <span>🏠</span> Centro
+            </button>
+          </div>
+        </div>
+
+        <!-- TERMINAL INTERACTIVA / LOG DE MENSAJES -->
+        <div class="card terminal-card">
+          <div class="terminal-header">
+            <span>📟 Consola & Mensajes Educativos</span>
+            <button id="clearTerminalBtn" class="btn-xs btn-ghost" title="Limpiar mensajes">🧹</button>
+          </div>
+          <div class="terminal-logs" id="terminalLogs">
+            <div class="log-entry system">
+              <span class="time">[Inicio]</span> ¡Bienvenido a <strong>Tortuga LOGO</strong>! Escribe órdenes como <code>AVANZA 100</code> o <code>GIRADERECHA 90</code> y pulsa <strong>Ejecutar</strong>.
+            </div>
+          </div>
+          <!-- Entrada rápida de un comando -->
+          <form class="terminal-input-bar" id="terminalForm">
+            <span class="prompt">&gt;</span>
+            <input type="text" id="terminalInput" placeholder="Escribe un comando rápido aquí y pulsa Enter (ej: AV 100)..." autocomplete="off">
+            <button type="submit" class="btn-xs btn-primary">Enviar</button>
+          </form>
+        </div>
+
+      </section>
+
+      <!-- COLUMNA DERECHA: Lienzo de la Tortuga e Información de Estado -->
+      <section class="right-panel">
+
+        <div class="card canvas-card">
+          <!-- Barra de Estado del Lienzo -->
+          <div class="canvas-toolbar">
+            <div class="turtle-telemetry">
+              <div class="telemetry-item" title="Posición X, Y de la tortuga">
+                <span class="telemetry-label">Posición:</span>
+                <span class="telemetry-val" id="turtlePosDisplay">X: 0, Y: 0</span>
+              </div>
+              <div class="telemetry-item" title="Rumbo actual en grados (0° = Arriba/Norte, 90° = Este)">
+                <span class="telemetry-label">Rumbo:</span>
+                <span class="telemetry-val" id="turtleHeadingDisplay">0° (N)</span>
+              </div>
+              <div class="telemetry-item" title="Estado del lápiz">
+                <span class="telemetry-label">Lápiz:</span>
+                <span class="telemetry-val" id="turtlePenDisplay">
+                  <span class="pen-dot" id="penDotIndicator"></span>
+                  <span id="penStateText">Abajo (Verde)</span>
+                </span>
+              </div>
+            </div>
+
+            <!-- Botones auxiliares de vista del lienzo -->
+            <div class="canvas-controls">
+              <button id="toggleGridBtn" class="btn-tool active" title="Mostrar/Ocultar cuadrícula milimétrica">
+                📐 Cuadrícula
+              </button>
+              <button id="toggleCompassBtn" class="btn-tool" title="Mostrar/Ocultar transportador y ángulos">
+                🧭 Ángulos
+              </button>
+              <button id="clearCanvasBtn" class="btn-tool" title="Borrar únicamente el lienzo de dibujo">
+                🧹 Borrar Lienzo
+              </button>
+              <button id="saveImageBtn" class="btn-tool highlight" title="Descargar dibujo como imagen PNG">
+                📸 Guardar Imagen
+              </button>
+            </div>
+          </div>
+
+          <!-- ÁREA DEL LIENZO DUAL (Trazo persistente + Capa dinámica para Tortuga y Objetivos) -->
+          <div class="canvas-stage-wrapper" id="canvasStageWrapper">
+            <!-- Lienzo de fondo: Cuadrícula milimétrica -->
+            <canvas id="gridCanvas" width="800" height="600"></canvas>
+            <!-- Lienzo de trazo permanente de la pluma -->
+            <canvas id="drawingCanvas" width="800" height="600"></canvas>
+            <!-- Lienzo interactivo: Tortuga animada, metas/gemas y confeti -->
+            <canvas id="overlayCanvas" width="800" height="600"></canvas>
+
+            <!-- Brújula flotante sobre la esquina -->
+            <div class="compass-widget hidden" id="compassWidget">
+              <div class="compass-dial" id="compassDial">
+                <span class="c-n">0°</span>
+                <span class="c-e">90°</span>
+                <span class="c-s">180°</span>
+                <span class="c-w">270°</span>
+                <div class="compass-needle" id="compassNeedle"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Barra de Paleta de Colores Rápida (Estudio Libre) -->
+          <div class="palette-colors-bar" id="paletteColorsBar">
+            <span class="color-picker-label">🎨 Color de trazo:</span>
+            <div class="color-swatches" id="colorSwatches">
+              <button class="color-swatch active" style="background:#10b981;" data-color="#10b981" title="Verde"></button>
+              <button class="color-swatch" style="background:#3b82f6;" data-color="#3b82f6" title="Azul"></button>
+              <button class="color-swatch" style="background:#ef4444;" data-color="#ef4444" title="Rojo"></button>
+              <button class="color-swatch" style="background:#f59e0b;" data-color="#f59e0b" title="Ámbar"></button>
+              <button class="color-swatch" style="background:#a855f7;" data-color="#a855f7" title="Púrpura"></button>
+              <button class="color-swatch" style="background:#ec4899;" data-color="#ec4899" title="Rosa"></button>
+              <button class="color-swatch" style="background:#06b6d4;" data-color="#06b6d4" title="Cian"></button>
+              <button class="color-swatch" style="background:#ffffff;" data-color="#ffffff" title="Blanco"></button>
+              <button class="color-swatch rainbow-swatch" data-color="rainbow" title="Modo Arcoíris">🌈</button>
+            </div>
+            <div class="width-picker">
+              <span>Grosor:</span>
+              <button class="width-btn active" data-width="2">Fino</button>
+              <button class="width-btn" data-width="4">Medio</button>
+              <button class="width-btn" data-width="8">Grueso</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- NAVEGADOR DE NIVELES (Grid de 10 misiones con estrellas) -->
+        <div class="card levels-grid-card" id="levelsGridCard">
+          <div class="levels-header">
+            <h3>🗺️ Mapa de Misiones de Programación</h3>
+            <span class="badge" id="levelProgressBadge">0 de 10 completadas</span>
+          </div>
+          <div class="levels-grid" id="levelsGridContainer">
+            <!-- Rellenado dinámicamente en game.js -->
+          </div>
+        </div>
+
+      </section>
+
+    </main>
+  </div>
+
+  <!-- MODAL: Victoria / Nivel Superado -->
+  <div class="modal-backdrop hidden" id="victoryModal">
+    <div class="modal-box victory-box">
+      <div class="victory-header-animation">
+        <span class="victory-icon">🎉</span>
+      </div>
+      <h2 id="victoryTitle">¡Misión Cumplida!</h2>
+      <p id="victorySubtitle">¡Has guiado a la tortuguita con gran maestría!</p>
+      
+      <div class="stars-celebration" id="victoryStarsContainer">
+        <span class="star-item">⭐</span>
+        <span class="star-item">⭐</span>
+        <span class="star-item">⭐</span>
+      </div>
+
+      <div class="victory-stats" id="victoryStats">
+        <div class="stat-cell">
+          <span class="stat-number" id="statsCommandsCount">4</span>
+          <span class="stat-tag">Comandos Usados</span>
+        </div>
+        <div class="stat-cell">
+          <span class="stat-number" id="statsBonus">¡Óptimo!</span>
+          <span class="stat-tag">Calidad de Código</span>
+        </div>
+      </div>
+
+      <p class="victory-feedback" id="victoryFeedbackText">
+        ¡Excelente razonamiento lógico! Has completado el objetivo con la solución más limpia.
+      </p>
+
+      <div class="modal-buttons">
+        <button id="retryLevelBtn" class="btn-modal btn-secondary">🔄 Repetir Nivel</button>
+        <button id="nextLevelModalBtn" class="btn-modal btn-primary">Siguiente Misión ➔</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Guía Rápida de Comandos LOGO -->
+  <div class="modal-backdrop hidden" id="helpModal">
+    <div class="modal-box help-box">
+      <div class="help-header">
+        <div class="brand-avatar-sm">🐢</div>
+        <h2>Diccionario de Comandos LOGO</h2>
+        <button id="closeHelpModalBtn" class="btn-icon close-btn" title="Cerrar ventana">✖</button>
+      </div>
+      <div class="help-content">
+        <p class="help-intro">
+          LOGO es un lenguaje amigable y visual creado para aprender a pensar con lógica. Puedes escribir las órdenes completas o sus abreviaturas rápidas:
+        </p>
+
+        <div class="help-table-wrapper">
+          <table class="help-table">
+            <thead>
+              <tr>
+                <th>Comando (Español)</th>
+                <th>Abreviatura</th>
+                <th>Inglés</th>
+                <th>¿Qué hace?</th>
+                <th>Ejemplo</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>AVANZA &lt;n&gt;</code></td>
+                <td><code>AV &lt;n&gt;</code></td>
+                <td><code>FORWARD / FD</code></td>
+                <td>Avanza <em>n</em> pasos en la dirección actual.</td>
+                <td><button class="code-pill" data-insert="AVANZA 100">AVANZA 100</button></td>
+              </tr>
+              <tr>
+                <td><code>RETROCEDE &lt;n&gt;</code></td>
+                <td><code>RE &lt;n&gt;</code></td>
+                <td><code>BACK / BK</code></td>
+                <td>Camina hacia atrás <em>n</em> pasos.</td>
+                <td><button class="code-pill" data-insert="RETROCEDE 50">RETROCEDE 50</button></td>
+              </tr>
+              <tr>
+                <td><code>GIRADERECHA &lt;grados&gt;</code></td>
+                <td><code>GD &lt;grados&gt;</code></td>
+                <td><code>RIGHT / RT</code></td>
+                <td>Gira a la derecha un ángulo en grados.</td>
+                <td><button class="code-pill" data-insert="GIRADERECHA 90">GIRADERECHA 90</button></td>
+              </tr>
+              <tr>
+                <td><code>GIRAIZQUIERDA &lt;grados&gt;</code></td>
+                <td><code>GI &lt;grados&gt;</code></td>
+                <td><code>LEFT / LT</code></td>
+                <td>Gira a la izquierda un ángulo en grados.</td>
+                <td><button class="code-pill" data-insert="GIRAIZQUIERDA 90">GIRAIZQUIERDA 90</button></td>
+              </tr>
+              <tr>
+                <td><code>SUBEPLUMA</code></td>
+                <td><code>SP</code></td>
+                <td><code>PENUP / PU</code></td>
+                <td>Levanta el lápiz: la tortuga se mueve sin pintar.</td>
+                <td><button class="code-pill" data-insert="SUBEPLUMA">SUBEPLUMA</button></td>
+              </tr>
+              <tr>
+                <td><code>BAJAPLUMA</code></td>
+                <td><code>BP</code></td>
+                <td><code>PENDOWN / PD</code></td>
+                <td>Baja el lápiz: vuelve a pintar al caminar.</td>
+                <td><button class="code-pill" data-insert="BAJAPLUMA">BAJAPLUMA</button></td>
+              </tr>
+              <tr>
+                <td><code>COLOR &lt;color&gt;</code></td>
+                <td><code>COL</code></td>
+                <td><code>SETPENCOLOR</code></td>
+                <td>Cambia el color de la pluma (rojo, azul, arcoiris, hex...).</td>
+                <td><button class="code-pill" data-insert="COLOR azul">COLOR azul</button></td>
+              </tr>
+              <tr>
+                <td><code>GROSOR &lt;n&gt;</code></td>
+                <td><code>ANCHO</code></td>
+                <td><code>WIDTH / SETWIDTH</code></td>
+                <td>Define el grosor de la línea en píxeles.</td>
+                <td><button class="code-pill" data-insert="GROSOR 5">GROSOR 5</button></td>
+              </tr>
+              <tr>
+                <td><code>REPITE &lt;n&gt; [ ... ]</code></td>
+                <td><code>REPEAT</code></td>
+                <td><code>REPEAT</code></td>
+                <td>¡El bucle mágico! Repite las órdenes dentro de los corchetes <em>n</em> veces.</td>
+                <td><button class="code-pill" data-insert="REPITE 4 [ AVANZA 100 GIRADERECHA 90 ]">REPITE 4 [ ... ]</button></td>
+              </tr>
+              <tr>
+                <td><code>CENTRO</code></td>
+                <td><code>HOME</code></td>
+                <td><code>HOME</code></td>
+                <td>Regresa la tortuguita al centro exacto apuntando al norte.</td>
+                <td><button class="code-pill" data-insert="CENTRO">CENTRO</button></td>
+              </tr>
+              <tr>
+                <td><code>BORRA / LIMPIAR</code></td>
+                <td><code>BPANTALLA</code></td>
+                <td><code>CLEAR / CS</code></td>
+                <td>Limpia todos los trazos dibujados en la pantalla.</td>
+                <td><button class="code-pill" data-insert="BORRA">BORRA</button></td>
+              </tr>
+              <tr>
+                <td><code>OCULTATORTUGA</code></td>
+                <td><code>OT</code></td>
+                <td><code>HIDETURTLE / HT</code></td>
+                <td>Oculta la tortuga para apreciar el dibujo final.</td>
+                <td><button class="code-pill" data-insert="OCULTATORTUGA">OCULTATORTUGA</button></td>
+              </tr>
+              <tr>
+                <td><code>MUESTRATORTUGA</code></td>
+                <td><code>MT</code></td>
+                <td><code>SHOWTURTLE / ST</code></td>
+                <td>Vuelve a mostrar la tortuga.</td>
+                <td><button class="code-pill" data-insert="MUESTRATORTUGA">MUESTRATORTUGA</button></td>
+              </tr>
+              <tr>
+                <td><code>RUMBO &lt;grados&gt;</code></td>
+                <td><code>SETH</code></td>
+                <td><code>SETHEADING</code></td>
+                <td>Fija el ángulo absoluto (0=Norte, 90=Este, 180=Sur, 270=Oeste).</td>
+                <td><button class="code-pill" data-insert="RUMBO 0">RUMBO 0</button></td>
+              </tr>
+              <tr>
+                <td><code>ESPERA &lt;ms&gt;</code></td>
+                <td><code>WAIT</code></td>
+                <td><code>WAIT</code></td>
+                <td>Pausa la tortuga un instante (milisegundos).</td>
+                <td><button class="code-pill" data-insert="ESPERA 200">ESPERA 200</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="help-tips">
+          <h4>💡 Secretos y Consejos de Geometría</h4>
+          <ul>
+            <li><strong>Para cerrar un polígono regular:</strong> El giro exterior siempre debe sumar 360°. Por ejemplo:
+              <ul>
+                <li>Cuadrado (4 lados): 360 / 4 = <strong>90°</strong> (<code>REPITE 4 [ AV 100 GD 90 ]</code>)</li>
+                <li>Triángulo (3 lados): 360 / 3 = <strong>120°</strong> (<code>REPITE 3 [ AV 100 GD 120 ]</code>)</li>
+                <li>Hexágono (6 lados): 360 / 6 = <strong>60°</strong> (<code>REPITE 6 [ AV 60 GD 60 ]</code>)</li>
+                <li>Estrella de 5 puntas: 720 / 5 = <strong>144°</strong> (<code>REPITE 5 [ AV 120 GD 144 ]</code>)</li>
+              </ul>
+            </li>
+            <li>Puedes usar comentarios con <code>#</code> o <code>;</code> para dejar notas en tu código.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="help-footer">
+        <button id="understoodHelpBtn" class="btn-action btn-primary">¡Entendido, a programar!</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>
+
